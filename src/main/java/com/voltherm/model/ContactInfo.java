@@ -17,13 +17,13 @@ public class ContactInfo {
     private String businessEmail;
     
     @JsonProperty
-    private String businessPhoneNumber;
+    private String supportPhoneNumber;
 
     @JsonProperty
     private String mainAddress;
 
     @JsonProperty
-    private List<String> branchAddresses;
+    private List<Office> branches;
 
     @JsonProperty
     private String facebookUrl;
@@ -41,6 +41,110 @@ public class ContactInfo {
     private String indiamartUrl;
 
     public ContactInfo() {}
+
+    // Nested Office class
+    public static class Office {
+        @JsonProperty
+        private String branchId;
+        
+        @JsonProperty
+        private String branchName;
+        
+        @JsonProperty
+        private String addressLine1;
+        
+        @JsonProperty
+        private String addressLine2;
+        
+        @JsonProperty
+        private String city;
+        
+        @JsonProperty
+        private String state;
+        
+        @JsonProperty
+        private String mapUrl;
+        
+        @JsonProperty
+        private String phoneNumber;
+        
+        @JsonProperty
+        private int pincode;
+
+        public Office() {}
+
+        public String getBranchId() {
+            return branchId;
+        }
+
+        public void setBranchId(String branchId) {
+            this.branchId = branchId;
+        }
+
+        public String getBranchName() {
+            return branchName;
+        }
+
+        public void setBranchName(String branchName) {
+            this.branchName = branchName;
+        }
+
+        public String getAddressLine1() {
+            return addressLine1;
+        }
+
+        public void setAddressLine1(String addressLine1) {
+            this.addressLine1 = addressLine1;
+        }
+
+        public String getAddressLine2() {
+            return addressLine2;
+        }
+
+        public void setAddressLine2(String addressLine2) {
+            this.addressLine2 = addressLine2;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getMapUrl() {
+            return mapUrl;
+        }
+
+        public void setMapUrl(String mapUrl) {
+            this.mapUrl = mapUrl;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public int getPincode() {
+            return pincode;
+        }
+
+        public void setPincode(int pincode) {
+            this.pincode = pincode;
+        }
+    }
 
     public String getFacebookUrl() {
         return facebookUrl;
@@ -90,12 +194,12 @@ public class ContactInfo {
         this.mainAddress = mainAddress;
     }
 
-    public List<String> getBranchAddresses() {
-        return branchAddresses;
+    public List<Office> getBranches() {
+        return branches;
     }
 
-    public void setBranchAddresses(List<String> branchAddresses) {
-        this.branchAddresses = branchAddresses;
+    public void setBranches(List<Office> branches) {
+        this.branches = branches;
     }
 
     public String getId() {
@@ -130,11 +234,11 @@ public class ContactInfo {
         this.businessEmail = businessEmail;
     }
 
-    public String getBusinessPhoneNumber() {
-        return businessPhoneNumber;
+    public String getSupportPhoneNumber() {
+        return supportPhoneNumber;
     }
 
-    public void setBusinessPhoneNumber(String businessPhoneNumber) {
-        this.businessPhoneNumber = businessPhoneNumber;
+    public void setSupportPhoneNumber(String supportPhoneNumber) {
+        this.supportPhoneNumber = supportPhoneNumber;
     }
 }

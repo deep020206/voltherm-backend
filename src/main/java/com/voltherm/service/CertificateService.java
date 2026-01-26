@@ -4,15 +4,17 @@ import com.voltherm.exception.ResourceNotFoundException;
 import com.voltherm.exception.ValidationException;
 import com.voltherm.model.Certificate;
 import com.voltherm.repository.CertificateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class CertificateService {
     
-    @Autowired
-    private CertificateRepository certificateRepository;
+    private final CertificateRepository certificateRepository;
+
+    public CertificateService(CertificateRepository certificateRepository) {
+        this.certificateRepository = certificateRepository;
+    }
 
     public List<Certificate> findAll() {
         return certificateRepository.findAll();

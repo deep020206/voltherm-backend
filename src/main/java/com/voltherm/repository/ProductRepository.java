@@ -22,11 +22,11 @@ public class ProductRepository {
 
     public ProductRepository(@Value("${app.products.json:/opt/app-data/products.json}") String productsJsonPath) throws IOException {
         this.productsJsonPath = Path.of(productsJsonPath);
+        Files.createDirectories(this.productsJsonPath.getParent());
         init();
     }
 
     private void init() throws IOException {
-        Files.createDirectories(productsJsonPath.getParent());
         if (Files.exists(productsJsonPath)) {
             products.clear();
             products.addAll(objectMapper.readValue(productsJsonPath.toFile(), new TypeReference<List<Product>>() {}));

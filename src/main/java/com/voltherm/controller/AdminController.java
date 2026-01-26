@@ -4,7 +4,6 @@ import com.voltherm.dto.ApiResponse;
 import com.voltherm.security.AdminUser;
 import com.voltherm.service.AuthService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,8 +14,11 @@ import java.util.Map;
 @RequestMapping("/api/admin")
 public class AdminController {
     
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AdminController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(

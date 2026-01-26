@@ -3,7 +3,6 @@ package com.voltherm.service;
 import com.voltherm.exception.ResourceNotFoundException;
 import com.voltherm.model.Product;
 import com.voltherm.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,13 +14,15 @@ import java.util.Map;
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final ProductRepository productRepository;
+    private final FileStorageService fileStorageService;
 
     private static final Map<String, String> pdfFileMap = new HashMap<>();
+
+    public ProductService(ProductRepository productRepository, FileStorageService fileStorageService) {
+        this.productRepository = productRepository;
+        this.fileStorageService = fileStorageService;
+    }
 
     public List<Product> findAll() {
         return productRepository.findAll();
@@ -95,17 +96,14 @@ public class ProductService {
 
     private void merge(Product target, Product src) {
         if (src.getProductName() != null) target.setProductName(src.getProductName());
-        if (src.getPrice() != null) target.setPrice(src.getPrice());
+        if (src.getPrice() != 0) target.setPrice(src.getPrice());
         if (src.isFeatured()) target.setFeatured(src.isFeatured());
+        target.setAvailable(src.isAvailable());
         if (src.getCategory() != null) target.setCategory(src.getCategory());
         if (src.getSubCategory() != null) target.setSubCategory(src.getSubCategory());
-        if (src.getBatteryChemistry() != null) target.setBatteryChemistry(src.getBatteryChemistry());
-        if (src.getCapacityAh() != 0) target.setCapacityAh(src.getCapacityAh());
-        if (src.getNominalVoltageV() != 0) target.setNominalVoltageV(src.getNominalVoltageV());
-        if (src.getOperatingVoltageV() != null) target.setOperatingVoltageV(src.getOperatingVoltageV());
-        if (src.getNominalEnergyWh() != 0) target.setNominalEnergyWh(src.getNominalEnergyWh());
-        if (src.getUsableEnergyWh() != 0) target.setUsableEnergyWh(src.getUsableEnergyWh());
-        if (src.getChargeDischargeCurrentA() != null) target.setChargeDischargeCurrentA(src.getChargeDischargeCurrentA());
+        if (src.getSpecificationFields() != null) target.setSpecificationFields(src.getSpecificationFields());
+        if (src.getSpecificationValues() != null) target.setSpecificationValues(src.getSpecificationValues());
+        if (src.getQuickSpecs() != null) target.setQuickSpecs(src.getQuickSpecs());
         if (src.getImageUrl() != null) target.setImageUrl(src.getImageUrl());
         if (src.getPdfDownloadUrl() != null) target.setPdfDownloadUrl(src.getPdfDownloadUrl());
     }

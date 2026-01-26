@@ -2,12 +2,14 @@ package com.voltherm.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.voltherm.model.Inquiry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +19,18 @@ import java.util.UUID;
 public class InquiryRepository {
     
     private final Path inquiriesJsonPath;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final List<Inquiry> inquiries = new ArrayList<>();
 
     public InquiryRepository(@Value("${app.inquiries.json:/opt/app-data/inquiries.json}") String inquiriesJsonPath) throws IOException {
         this.inquiriesJsonPath = Path.of(inquiriesJsonPath);
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        Files.createDirectories(this.inquiriesJsonPath.getParent());
         init();
     }
 
     private void init() throws IOException {
-        Files.createDirectories(inquiriesJsonPath.getParent());
         if (Files.exists(inquiriesJsonPath)) {
             inquiries.clear();
             inquiries.addAll(objectMapper.readValue(inquiriesJsonPath.toFile(), new TypeReference<List<Inquiry>>() {}));
@@ -48,10 +52,9 @@ public class InquiryRepository {
     public Inquiry save(Inquiry inquiry) {
         if (inquiry.getId() == null) {
             inquiry.setId(UUID.randomUUID().toString());
-            inquiry.setCreatedAt(System.currentTimeMillis());
+            inquiry.setCreatedAt(Instant.now());
         }
         
-        inquiry.setUpdatedAt(System.currentTimeMillis());
         inquiries.removeIf(i -> i.getId().equals(inquiry.getId()));
         inquiries.add(inquiry);
         

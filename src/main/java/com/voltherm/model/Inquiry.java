@@ -1,16 +1,15 @@
 package com.voltherm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
+import java.util.List;
 
 public class Inquiry {
     @JsonProperty
     private String id;
     
     @JsonProperty
-    private long createdAt;
-    
-    @JsonProperty
-    private long updatedAt;
+    private Instant createdAt;
 
     @JsonProperty
     private String email;
@@ -24,6 +23,14 @@ public class Inquiry {
     @JsonProperty
     private String requirements;
 
+    @JsonProperty
+    private String company;
+
+    @JsonProperty
+    private List<String> interestedProducts;
+
+    @JsonProperty
+    private String status;
 
     public Inquiry() {}
 
@@ -35,20 +42,12 @@ public class Inquiry {
         this.id = id;
     }
 
-    public long getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public long getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(long updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getEmail() {
@@ -81,5 +80,29 @@ public class Inquiry {
 
     public void setRequirements(String requirements) {
         this.requirements = requirements;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public List<String> getInterestedProducts() {
+        return interestedProducts;
+    }
+
+    public void setInterestedProducts(List<String> interestedProducts) {
+        this.interestedProducts = interestedProducts;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

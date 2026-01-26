@@ -1,59 +1,73 @@
 package com.voltherm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Product {
     private String productId;
     private String productName;
-    private Price price;
+    private double price;
     private boolean featured;
+    private boolean isAvailable;
     private String category;
     private String subCategory;
-    private String batteryChemistry;
-    private double capacityAh;
-    private double nominalVoltageV;
-    private OperatingVoltage operatingVoltageV;
-    private double nominalEnergyWh;
-    private double usableEnergyWh;
-    private ChargeDischargeCurrent chargeDischargeCurrentA;
+    private String[] specificationFields;
+    private String[] specificationValues;
+    private String[] quickSpecs;
     private String imageUrl;       // e.g. /images/uuid.jpg
     private String pdfDownloadUrl; // e.g. /api/products/{productId}/pdf
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Price {
-        private String currency;
-        private double amount;
+    public Product() {}
+
+    public Product(String productId, String productName, double price, boolean featured,
+                   boolean isAvailable, String category, String subCategory,
+                   String[] specificationFields, String[] specificationValues, String[] quickSpecs,
+                   String imageUrl, String pdfDownloadUrl) {
+        this.productId = productId;
+        this.productName = productName;
+        this.price = price;
+        this.featured = featured;
+        this.isAvailable = isAvailable;
+        this.category = category;
+        this.subCategory = subCategory;
+        this.specificationFields = specificationFields;
+        this.specificationValues = specificationValues;
+        this.quickSpecs = quickSpecs;
+        this.imageUrl = imageUrl;
+        this.pdfDownloadUrl = pdfDownloadUrl;
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OperatingVoltage {
-        private double min;
-        private double max;
-    }
+    // Getters and Setters
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ChargeDischargeCurrent {
-        private Current recommended;
-        private Current maximum;
-        private Current peak;
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
 
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class Current {
-            private double charge;
-            private double discharge;
-        }
-    }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+
+    public boolean isFeatured() { return featured; }
+    public void setFeatured(boolean featured) { this.featured = featured; }
+
+    public boolean isAvailable() { return isAvailable; }
+    public void setAvailable(boolean available) { isAvailable = available; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public String getSubCategory() { return subCategory; }
+    public void setSubCategory(String subCategory) { this.subCategory = subCategory; }
+
+    public String[] getSpecificationFields() { return specificationFields; }
+    public void setSpecificationFields(String[] specificationFields) { this.specificationFields = specificationFields; }
+
+    public String[] getSpecificationValues() { return specificationValues; }
+    public void setSpecificationValues(String[] specificationValues) { this.specificationValues = specificationValues; }
+
+    public String[] getQuickSpecs() { return quickSpecs; }
+    public void setQuickSpecs(String[] quickSpecs) { this.quickSpecs = quickSpecs; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getPdfDownloadUrl() { return pdfDownloadUrl; }
+    public void setPdfDownloadUrl(String pdfDownloadUrl) { this.pdfDownloadUrl = pdfDownloadUrl; }
 }

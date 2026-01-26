@@ -3,19 +3,22 @@ package com.voltherm.controller;
 import com.voltherm.dto.ApiResponse;
 import com.voltherm.model.Inquiry;
 import com.voltherm.service.InquiryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/inquiries")
 public class InquiryController {
     
-    @Autowired
-    private InquiryService inquiryService;
+    private final InquiryService inquiryService;
+
+    public InquiryController(InquiryService inquiryService) {
+        this.inquiryService = inquiryService;
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createInquiry(@RequestBody Inquiry inquiry) {
@@ -36,4 +39,26 @@ public class InquiryController {
         return ResponseEntity.ok(new ApiResponse<>(true, inquiries));
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<?>> updateInquiryStatus(
+            @PathVariable String id,
+            @RequestBody Map<String, String> statusUpdate,
+            Authentication authentication) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false, 
+                        new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
+        }
+        
+        String status = statusUpdate.get("status");
+        if (status == null || status.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(false, 
+                        new ApiResponse.ErrorInfo("BAD_REQUEST", "Status is required", 400)));
+        }
+        
+        Inquiry updated = inquiryService.updateStatus(id, status);
+        return ResponseEntity.ok(new ApiResponse<>(true, updated));
+    }
 }

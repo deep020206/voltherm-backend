@@ -1,9 +1,9 @@
 package com.voltherm.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voltherm.dto.ApiResponse;
 import com.voltherm.model.Product;
 import com.voltherm.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,8 +18,13 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final ObjectMapper objectMapper;
+
+    public ProductController(ProductService productService, ObjectMapper objectMapper) {
+        this.productService = productService;
+        this.objectMapper = objectMapper;
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getProducts() {
@@ -51,7 +56,7 @@ public class ProductController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> createProduct(
             Authentication authentication,
-            @RequestPart("product") Product product,
+            @RequestPart("product") String productJson,
             @RequestPart("image") MultipartFile image,
             @RequestPart(value = "pdf", required = false) MultipartFile pdf) throws IOException {
 
@@ -59,6 +64,8 @@ public class ProductController {
             return ResponseEntity.status(401)
                     .body(new ApiResponse<>(false, new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
         }
+        
+        Product product = objectMapper.readValue(productJson, Product.class);
         Product created = productService.create(product, image, pdf);
         return ResponseEntity.status(201).body(new ApiResponse<>(true, created));
     }
@@ -67,7 +74,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse<?>> updateProduct(
             @PathVariable String productId,
             Authentication authentication,
-            @RequestPart("product") Product product,
+            @RequestPart("product") String productJson,
             @RequestPart(value = "image", required = false) MultipartFile image,
             @RequestPart(value = "pdf", required = false) MultipartFile pdf) throws IOException {
 
@@ -75,6 +82,8 @@ public class ProductController {
             return ResponseEntity.status(401)
                     .body(new ApiResponse<>(false, new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
         }
+        
+        Product product = objectMapper.readValue(productJson, Product.class);
         Product updated = productService.update(productId, product, image, pdf);
         return ResponseEntity.ok(new ApiResponse<>(true, updated));
     }

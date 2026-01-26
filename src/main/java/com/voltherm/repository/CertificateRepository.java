@@ -22,11 +22,11 @@ public class CertificateRepository {
 
     public CertificateRepository(@Value("${app.certificates.json:/opt/app-data/certificates.json}") String certificatesJsonPath) throws IOException {
         this.certificatesJsonPath = Path.of(certificatesJsonPath);
+        Files.createDirectories(this.certificatesJsonPath.getParent());
         init();
     }
 
     private void init() throws IOException {
-        Files.createDirectories(certificatesJsonPath.getParent());
         if (Files.exists(certificatesJsonPath)) {
             certificates.clear();
             certificates.addAll(objectMapper.readValue(certificatesJsonPath.toFile(), new TypeReference<List<Certificate>>() {}));

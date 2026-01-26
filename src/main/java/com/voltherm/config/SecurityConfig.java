@@ -5,18 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,6 +25,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/inquiries").permitAll()
                 .requestMatchers("/api/admin/login").permitAll()
                 .requestMatchers("/api/admin/**").authenticated()
+                .requestMatchers("/api/settings/**").authenticated()
                 .requestMatchers("/images/**").permitAll()
                 .anyRequest().permitAll()
             )

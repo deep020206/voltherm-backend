@@ -3,7 +3,6 @@ package com.voltherm.controller;
 import com.voltherm.dto.ApiResponse;
 import com.voltherm.model.Certificate;
 import com.voltherm.service.CertificateService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,8 +13,11 @@ import java.util.List;
 @RequestMapping("/api/certificates")
 public class CertificateController {
     
-    @Autowired
-    private CertificateService certificateService;
+    private final CertificateService certificateService;
+
+    public CertificateController(CertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<?>> listCertificates() {
