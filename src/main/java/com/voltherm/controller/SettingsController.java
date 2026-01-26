@@ -4,6 +4,8 @@ import com.voltherm.dto.ApiResponse;
 import com.voltherm.model.PasswordChangeRequest;
 import com.voltherm.model.UsernameChangeRequest;
 import com.voltherm.model.OtpVerificationRequest;
+import com.voltherm.model.ReceiverEmailChangeRequest;
+import com.voltherm.model.SenderEmailChangeRequest;
 import com.voltherm.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,38 @@ public class SettingsController {
 
         String currentUsername = authentication.getName();
         String message = authService.changeUsername(request, currentUsername);
+        
+        return ResponseEntity.ok(new ApiResponse<>(true, message));
+    }
+
+    @PostMapping("/email/receiver")
+    public ResponseEntity<ApiResponse<?>> changeReceiverEmail(
+            Authentication authentication,
+            @RequestBody ReceiverEmailChangeRequest request) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false, 
+                        new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
+        }
+
+        String message = authService.changeReceiverEmail(request.getReceiverEmail());
+        
+        return ResponseEntity.ok(new ApiResponse<>(true, message));
+    }
+
+    @PostMapping("/email/sender")
+    public ResponseEntity<ApiResponse<?>> changeSenderEmail(
+            Authentication authentication,
+            @RequestBody SenderEmailChangeRequest request) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false, 
+                        new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
+        }
+
+        String message = authService.changeSenderEmail(request.getSenderEmail(), request.getAppPassword());
         
         return ResponseEntity.ok(new ApiResponse<>(true, message));
     }

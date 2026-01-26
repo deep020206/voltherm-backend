@@ -24,6 +24,7 @@ public class AuthService {
     private final SessionManager sessionManager;
     private final OtpStorage otpStorage;
     private final EmailService emailService;
+    private final EmailConfigService emailConfigService;
     
     @Value("${admin.username:admin}")
     private String adminUsername;
@@ -31,10 +32,11 @@ public class AuthService {
     @Value("${admin.password:admin123}")
     private String adminPassword;
 
-    public AuthService(SessionManager sessionManager, OtpStorage otpStorage, EmailService emailService) {
+    public AuthService(SessionManager sessionManager, OtpStorage otpStorage, EmailService emailService, EmailConfigService emailConfigService) {
         this.sessionManager = sessionManager;
         this.otpStorage = otpStorage;
         this.emailService = emailService;
+        this.emailConfigService = emailConfigService;
     }
 
     /**
@@ -154,6 +156,16 @@ public class AuthService {
         adminUsername = request.getNewUsername();
 
         return "Username changed successfully";
+    }
+
+    public String changeReceiverEmail(String newReceiverEmail) {
+        emailConfigService.updateReceiverEmail(newReceiverEmail);
+        return "Receiver email updated successfully to: " + newReceiverEmail;
+    }
+
+    public String changeSenderEmail(String newSenderEmail, String newAppPassword) {
+        emailConfigService.updateSenderEmail(newSenderEmail, newAppPassword);
+        return "Sender email and credentials updated successfully";
     }
 
     private void validatePasswordStrength(String password) {

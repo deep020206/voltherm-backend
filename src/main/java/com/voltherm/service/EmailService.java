@@ -4,7 +4,6 @@ import com.voltherm.model.Inquiry;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,17 +19,15 @@ public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     @Autowired
-    private JavaMailSender mailSender;
-
-    @Value("${voltherm.email.company}")
-    private String companyEmail;
+    private EmailConfigService emailConfigService;
 
     public void sendInquiryNotification(Inquiry inquiry) {
         try {
+            JavaMailSender mailSender = emailConfigService.createMailSender();
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setTo(companyEmail);
+            helper.setTo(emailConfigService.getReceiverEmail());
             helper.setSubject("New Inquiry Received - " + inquiry.getName());
             helper.setText(buildInquiryEmailContent(inquiry), true);
 
@@ -118,10 +115,11 @@ public class EmailService {
 
     public void sendOtpEmail(String username, String otp) {
         try {
+            JavaMailSender mailSender = emailConfigService.createMailSender();
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setTo(companyEmail);
+            helper.setTo(emailConfigService.getReceiverEmail());
             helper.setSubject("Password Change OTP - Voltherm Admin");
             helper.setText(buildOtpEmailContent(username, otp), true);
 
