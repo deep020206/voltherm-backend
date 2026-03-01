@@ -61,4 +61,26 @@ public class InquiryController {
         Inquiry updated = inquiryService.updateStatus(id, status);
         return ResponseEntity.ok(new ApiResponse<>(true, updated));
     }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<?>> deleteInquiries(
+            @RequestBody Map<String, List<String>> body,
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false,
+                        new ApiResponse.ErrorInfo("UNAUTHORIZED", "Admin authentication required", 401)));
+        }
+
+        List<String> ids = body.get("ids");
+        if (ids == null || ids.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(false,
+                        new ApiResponse.ErrorInfo("BAD_REQUEST", "At least one inquiry ID is required", 400)));
+        }
+
+        inquiryService.deleteAll(ids);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Inquiries deleted successfully"));
+    }
 }

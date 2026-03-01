@@ -67,7 +67,8 @@ curl -X GET http://localhost:8080/api/products/prod-123
     "specificationValues": ["5kW", "380V", "0-500°C"],
     "quickSpecs": ["High efficiency", "Durable construction"],
     "imageUrl": "/images/prod-123-uuid.jpg",
-    "pdfDownloadUrl": "/api/products/prod-123/pdf"
+    "pdfDownloadUrl": "/api/products/prod-123/pdf",
+    "productDescription": "High-performance industrial heater designed for heavy-duty applications."
   }
 }
 ```
@@ -95,7 +96,8 @@ curl -X GET http://localhost:8080/api/products/featured
       "featured": true,
       "available": true,
       "category": "Heaters",
-      "imageUrl": "/images/prod-123-uuid.jpg"
+      "imageUrl": "/images/prod-123-uuid.jpg",
+      "productDescription": "High-performance industrial heater designed for heavy-duty applications."
     }
   ]
 }
@@ -139,7 +141,7 @@ fetch('http://localhost:8080/api/products/prod-123/pdf')
 ```bash
 curl -X POST http://localhost:8080/api/products \
   -H "Cookie: JSESSIONID=your-session-id" \
-  -F "product={\"productId\":\"prod-456\",\"productName\":\"New Heater\",\"price\":12000,\"featured\":true,\"available\":true,\"category\":\"Heaters\",\"subCategory\":\"Commercial\",\"specificationFields\":[\"Power\",\"Voltage\"],\"specificationValues\":[\"3kW\",\"220V\"],\"quickSpecs\":[\"Compact design\"]};type=application/json" \
+  -F "product={\"productId\":\"prod-456\",\"productName\":\"New Heater\",\"price\":12000,\"featured\":true,\"available\":true,\"category\":\"Heaters\",\"subCategory\":\"Commercial\",\"specificationFields\":[\"Power\",\"Voltage\"],\"specificationValues\":[\"3kW\",\"220V\"],\"quickSpecs\":[\"Compact design\"],\"productDescription\":\"Compact commercial heater suitable for office and retail spaces.\"};type=application/json" \
   -F "image=@/path/to/image.jpg" \
   -F "pdf=@/path/to/datasheet.pdf"
 ```
@@ -158,7 +160,8 @@ const productData = {
   subCategory: "Commercial",
   specificationFields: ["Power", "Voltage"],
   specificationValues: ["3kW", "220V"],
-  quickSpecs: ["Compact design"]
+  quickSpecs: ["Compact design"],
+  productDescription: "Compact commercial heater suitable for office and retail spaces."
 };
 
 formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
@@ -185,7 +188,8 @@ fetch('http://localhost:8080/api/products', {
     "featured": true,
     "available": true,
     "imageUrl": "/images/prod-456-uuid.jpg",
-    "pdfDownloadUrl": "/api/products/prod-456/pdf"
+    "pdfDownloadUrl": "/api/products/prod-456/pdf",
+    "productDescription": "Compact commercial heater suitable for office and retail spaces."
   }
 }
 ```
@@ -201,14 +205,14 @@ fetch('http://localhost:8080/api/products', {
 ```bash
 curl -X PUT http://localhost:8080/api/products/prod-456 \
   -H "Cookie: JSESSIONID=your-session-id" \
-  -F "product={\"productName\":\"Updated Heater\",\"price\":13000};type=application/json" \
+  -F "product={\"productName\":\"Updated Heater\",\"price\":13000,\"productDescription\":\"Updated description for the heater.\"};type=application/json" \
   -F "image=@/path/to/new-image.jpg"
 ```
 
 **JavaScript Example:**
 ```javascript
 const formData = new FormData();
-formData.append('product', new Blob([JSON.stringify({ productName: "Updated Heater", price: 13000 })], { type: 'application/json' }));
+formData.append('product', new Blob([JSON.stringify({ productName: "Updated Heater", price: 13000, productDescription: "Updated description for the heater." })], { type: 'application/json' }));
 formData.append('image', newImageFile); // Optional
 
 fetch('http://localhost:8080/api/products/prod-456', {
@@ -226,7 +230,8 @@ fetch('http://localhost:8080/api/products/prod-456', {
     "productId": "prod-456",
     "productName": "Updated Heater",
     "price": 13000.0,
-    "imageUrl": "/images/prod-456-new-uuid.jpg"
+    "imageUrl": "/images/prod-456-new-uuid.jpg",
+    "productDescription": "Updated description for the heater."
   }
 }
 ```
@@ -382,6 +387,44 @@ fetch('http://localhost:8080/api/inquiries/inq-789/status', {
     "id": "inq-789",
     "status": "contacted"
   }
+}
+```
+
+---
+
+### 2.4 Bulk Delete Inquiries (Admin Only)
+**Endpoint:** `DELETE /api/inquiries`  
+**Authentication:** Required (Admin session)  
+**Request Type:** JSON in body  
+**Content-Type:** `application/json`
+
+**Sample Request:**
+```bash
+curl -X DELETE http://localhost:8080/api/inquiries \
+  -H "Cookie: JSESSIONID=your-session-id" \
+  -H "Content-Type: application/json" \
+  -d '{"ids": ["inq-789", "inq-790", "inq-791"]}'
+```
+
+**JavaScript Example:**
+```javascript
+fetch('http://localhost:8080/api/inquiries', {
+  method: 'DELETE',
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ ids: ["inq-789", "inq-790", "inq-791"] })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+**Sample Response:**
+```json
+{
+  "success": true,
+  "data": "Inquiries deleted successfully"
 }
 ```
 
@@ -569,7 +612,7 @@ curl -X GET http://localhost:8080/api/certificates
     {
       "id": "cert-1",
       "name": "ISO 9001:2015",
-      "url": "https://example.com/certificates/iso-9001.pdf"
+      "imageUrl": "/images/cert-1-uuid.jpg"
     }
   ]
 }
@@ -580,17 +623,30 @@ curl -X GET http://localhost:8080/api/certificates
 ### 4.2 Create Certificate (Admin Only)
 **Endpoint:** `POST /api/certificates`  
 **Authentication:** Required (Admin session)  
-**Request Type:** JSON in body
+**Request Type:** Multipart form-data  
+**Content-Type:** `multipart/form-data`
 
 **Sample Request:**
 ```bash
 curl -X POST http://localhost:8080/api/certificates \
   -H "Cookie: JSESSIONID=your-session-id" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "ISO 14001:2015",
-    "url": "https://example.com/certificates/iso-14001.pdf"
-  }'
+  -F "name=ISO 14001:2015" \
+  -F "image=@/path/to/certificate-image.jpg"
+```
+
+**JavaScript Example:**
+```javascript
+const formData = new FormData();
+formData.append('name', 'ISO 14001:2015');
+formData.append('image', imageFile); // File object from input[type=file]
+
+fetch('http://localhost:8080/api/certificates', {
+  method: 'POST',
+  credentials: 'include',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ```
 
 **Sample Response:**
@@ -600,7 +656,7 @@ curl -X POST http://localhost:8080/api/certificates \
   "data": {
     "id": "cert-2",
     "name": "ISO 14001:2015",
-    "url": "https://example.com/certificates/iso-14001.pdf"
+    "imageUrl": "/images/cert-2-uuid.jpg"
   }
 }
 ```

@@ -56,4 +56,11 @@ public class InquiryService {
         inquiry.setStatus(status);
         return inquiryRepository.save(inquiry);
     }
+
+    public void deleteAll(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new ValidationException("At least one inquiry ID is required");
+        }
+        inquiryRepository.deleteAllByIds(ids);
+    }
 }

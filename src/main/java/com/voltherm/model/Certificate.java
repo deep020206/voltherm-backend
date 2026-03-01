@@ -10,7 +10,7 @@ public class Certificate {
     private String name;
     
     @JsonProperty
-    private String url;
+    private String imageUrl;
 
     public Certificate() {}
 
@@ -30,11 +30,11 @@ public class Certificate {
         this.name = name;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

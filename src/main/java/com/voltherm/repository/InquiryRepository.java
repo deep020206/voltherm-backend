@@ -67,6 +67,11 @@ public class InquiryRepository {
         persist();
     }
 
+    public void deleteAllByIds(List<String> ids) {
+        inquiries.removeIf(i -> ids.contains(i.getId()));
+        persist();
+    }
+
     private synchronized void persist() {
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(inquiriesJsonPath.toFile(), inquiries);

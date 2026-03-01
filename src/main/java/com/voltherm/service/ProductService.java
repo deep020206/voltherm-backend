@@ -38,6 +38,10 @@ public class ProductService {
     }
 
     public Product create(Product product, MultipartFile image, MultipartFile pdf) throws IOException {
+        if (product.getProductId() == null || product.getProductId().isEmpty()) {
+            product.setProductId(java.util.UUID.randomUUID().toString());
+        }
+        
         ensureUniqueId(product.getProductId());
         handleFiles(product, image, pdf, true);
         return productRepository.save(product);
@@ -106,6 +110,7 @@ public class ProductService {
         if (src.getQuickSpecs() != null) target.setQuickSpecs(src.getQuickSpecs());
         if (src.getImageUrl() != null) target.setImageUrl(src.getImageUrl());
         if (src.getPdfDownloadUrl() != null) target.setPdfDownloadUrl(src.getPdfDownloadUrl());
+        if (src.getProductDescription() != null) target.setProductDescription(src.getProductDescription());
     }
 
     private void storePdfFilename(String productId, String filename) {

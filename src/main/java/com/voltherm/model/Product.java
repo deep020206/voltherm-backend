@@ -11,15 +11,16 @@ public class Product {
     private String[] specificationFields;
     private String[] specificationValues;
     private String[] quickSpecs;
-    private String imageUrl;       // e.g. /images/uuid.jpg
-    private String pdfDownloadUrl; // e.g. /api/products/{productId}/pdf
+    private String imageUrl;          // e.g. /images/uuid.jpg
+    private String pdfDownloadUrl;    // e.g. /api/products/{productId}/pdf
+    private String productDescription;
 
     public Product() {}
 
     public Product(String productId, String productName, double price, boolean featured,
                    boolean isAvailable, String category, String subCategory,
                    String[] specificationFields, String[] specificationValues, String[] quickSpecs,
-                   String imageUrl, String pdfDownloadUrl) {
+                   String imageUrl, String pdfDownloadUrl, String productDescription) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -32,6 +33,7 @@ public class Product {
         this.quickSpecs = quickSpecs;
         this.imageUrl = imageUrl;
         this.pdfDownloadUrl = pdfDownloadUrl;
+        this.productDescription = productDescription;
     }
 
     // Getters and Setters
@@ -70,4 +72,7 @@ public class Product {
 
     public String getPdfDownloadUrl() { return pdfDownloadUrl; }
     public void setPdfDownloadUrl(String pdfDownloadUrl) { this.pdfDownloadUrl = pdfDownloadUrl; }
+
+    public String getProductDescription() { return productDescription; }
+    public void setProductDescription(String productDescription) { this.productDescription = productDescription; }
 }
