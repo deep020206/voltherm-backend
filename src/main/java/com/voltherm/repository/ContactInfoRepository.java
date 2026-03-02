@@ -24,10 +24,13 @@ public class ContactInfoRepository {
 
     private void init() throws IOException {
         if (Files.exists(contactInfoJsonPath)) {
-            contactInfo = objectMapper.readValue(contactInfoJsonPath.toFile(), ContactInfo.class);
-        } else {
-            persist();
+            ContactInfo parsed = objectMapper.readValue(contactInfoJsonPath.toFile(), ContactInfo.class);
+            // Treat a file containing literal "null" JSON the same as no file
+            if (parsed != null) {
+                contactInfo = parsed;
+            }
         }
+        // Do NOT persist null on first startup – let save() create the file with real data
     }
 
     public ContactInfo getContactInfo() {

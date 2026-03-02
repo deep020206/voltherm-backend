@@ -43,6 +43,12 @@ public class EmailConfigService {
         return senderEmail;
     }
 
+    public boolean isConfigured() {
+        return senderEmail != null && !senderEmail.isBlank()
+                && senderPassword != null && !senderPassword.isBlank()
+                && receiverEmail != null && !receiverEmail.isBlank();
+    }
+
     public void updateReceiverEmail(String newReceiverEmail) {
         if (newReceiverEmail == null || newReceiverEmail.trim().isEmpty()) {
             throw new ValidationException("Receiver email cannot be empty");

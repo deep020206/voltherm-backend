@@ -4,6 +4,7 @@ import com.voltherm.model.Inquiry;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -84,12 +85,41 @@ public class EmailService {
         content.append("<span class='label'>Phone:</span>");
         content.append("<span class='value'>").append(inquiry.getPhoneNumber() != null ? inquiry.getPhoneNumber() : "Not provided").append("</span>");
         content.append("</div>");
-        
+
         content.append("<div class='field'>");
         content.append("<span class='label'>Company:</span>");
-        content.append("<span class='value'>").append(inquiry.getCompany() != null ? inquiry.getCompany() : "Not provided").append("</span>");
+        String company = (inquiry.getCompany() != null && !inquiry.getCompany().isBlank())
+                ? inquiry.getCompany() : "--";
+        content.append("<span class='value'>").append(company).append("</span>");
         content.append("</div>");
-        
+
+        // Products table — only render when cart items are present
+        if (inquiry.getCartItems() != null && !inquiry.getCartItems().isEmpty()) {
+            content.append("<div class='field'>");
+            content.append("<span class='label'>Products Enquired:</span>");
+            content.append("<table style='width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;font-family:Arial,sans-serif;'>");
+            content.append("<thead>");
+            content.append("<tr>");
+            content.append("<th style='background-color:#4CAF50;color:#fff;text-align:center;padding:8px 10px;border:1px solid #45a049;width:5%;'>#</th>");
+            content.append("<th style='background-color:#4CAF50;color:#fff;text-align:left;padding:8px 10px;border:1px solid #45a049;'>Product</th>");
+            content.append("<th style='background-color:#4CAF50;color:#fff;text-align:center;padding:8px 10px;border:1px solid #45a049;width:10%;'>Qty</th>");
+            content.append("</tr>");
+            content.append("</thead>");
+            content.append("<tbody>");
+            int row = 1;
+            for (Inquiry.CartItem ci : inquiry.getCartItems()) {
+                String rowBg = (row % 2 == 0) ? "#f2f2f2" : "#ffffff";
+                content.append("<tr style='background-color:").append(rowBg).append(";'>");
+                content.append("<td style='padding:7px 10px;border:1px solid #ddd;text-align:center;color:#555;'>").append(row++).append("</td>");
+                content.append("<td style='padding:7px 10px;border:1px solid #ddd;color:#333;'>").append(ci.getTitle() != null ? ci.getTitle() : "").append("</td>");
+                content.append("<td style='padding:7px 10px;border:1px solid #ddd;text-align:center;color:#333;font-weight:bold;'>").append(ci.getQuantity()).append("</td>");
+                content.append("</tr>");
+            }
+            content.append("</tbody>");
+            content.append("</table>");
+            content.append("</div>");
+        }
+
         content.append("<div class='field'>");
         content.append("<span class='label'>Message:</span>");
         content.append("<div class='value' style='margin-top: 10px; padding: 10px; background-color: white; border-left: 3px solid #4CAF50;'>");
@@ -113,6 +143,10 @@ public class EmailService {
         return content.toString();
     }
 
+    public boolean isEmailConfigured() {
+        return emailConfigService.isConfigured();
+    }
+
     public void sendOtpEmail(String username, String otp) {
         try {
             JavaMailSender mailSender = emailConfigService.createMailSender();
@@ -125,9 +159,9 @@ public class EmailService {
 
             mailSender.send(message);
             logger.info("OTP email sent successfully for user: {}", username);
-        } catch (MessagingException e) {
+        } catch (MessagingException | MailException e) {
             logger.error("Failed to send OTP email for user: {}", username, e);
-            throw new RuntimeException("Failed to send OTP email. Please try again later.");
+            throw new RuntimeException("Failed to send OTP email: " + e.getMessage());
         }
     }
 

@@ -20,7 +20,7 @@ public class ContactInfo {
     private String supportPhoneNumber;
 
     @JsonProperty
-    private String mainAddress;
+    private MainAddress mainAddress;
 
     @JsonProperty
     private List<Office> branches;
@@ -146,6 +146,59 @@ public class ContactInfo {
         }
     }
 
+    // Nested MainAddress class
+    public static class MainAddress {
+        @JsonProperty
+        private String companyName;
+
+        @JsonProperty
+        private String addressLine1;
+
+        @JsonProperty
+        private String addressLine2;
+
+        @JsonProperty
+        private String city;
+
+        @JsonProperty
+        private String state;
+
+        @JsonProperty
+        private String pincode;
+
+        @JsonProperty
+        private String phoneNumber;
+
+        @JsonProperty
+        private String mapUrl;
+
+        public MainAddress() {}
+
+        public String getCompanyName() { return companyName; }
+        public void setCompanyName(String companyName) { this.companyName = companyName; }
+
+        public String getAddressLine1() { return addressLine1; }
+        public void setAddressLine1(String addressLine1) { this.addressLine1 = addressLine1; }
+
+        public String getAddressLine2() { return addressLine2; }
+        public void setAddressLine2(String addressLine2) { this.addressLine2 = addressLine2; }
+
+        public String getCity() { return city; }
+        public void setCity(String city) { this.city = city; }
+
+        public String getState() { return state; }
+        public void setState(String state) { this.state = state; }
+
+        public String getPincode() { return pincode; }
+        public void setPincode(String pincode) { this.pincode = pincode; }
+
+        public String getPhoneNumber() { return phoneNumber; }
+        public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+        public String getMapUrl() { return mapUrl; }
+        public void setMapUrl(String mapUrl) { this.mapUrl = mapUrl; }
+    }
+
     public String getFacebookUrl() {
         return facebookUrl;
     }
@@ -186,11 +239,11 @@ public class ContactInfo {
         this.indiamartUrl = indiamartUrl;
     }
 
-    public String getMainAddress() {
+    public MainAddress getMainAddress() {
         return mainAddress;
     }
 
-    public void setMainAddress(String mainAddress) {
+    public void setMainAddress(MainAddress mainAddress) {
         this.mainAddress = mainAddress;
     }
 

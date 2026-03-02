@@ -20,7 +20,7 @@ public class ContactInfoService {
     public ContactInfo getContactInfo() {
         ContactInfo info = contactInfoRepository.getContactInfo();
         if (info == null) {
-            throw new ResourceNotFoundException("Contact info not found");
+            return new ContactInfo();
         }
         return info;
     }

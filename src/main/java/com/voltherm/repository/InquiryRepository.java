@@ -10,10 +10,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Repository
 public class InquiryRepository {
@@ -51,7 +54,7 @@ public class InquiryRepository {
 
     public Inquiry save(Inquiry inquiry) {
         if (inquiry.getId() == null) {
-            inquiry.setId(UUID.randomUUID().toString());
+            inquiry.setId(generateInquiryId());
             inquiry.setCreatedAt(Instant.now());
         }
         
@@ -78,5 +81,18 @@ public class InquiryRepository {
         } catch (IOException e) {
             throw new RuntimeException("Failed to persist inquiries.json", e);
         }
+    }
+
+    /**
+     * Generates a meaningful, unique inquiry ID in the format:
+     * IN&lt;dd&gt;&lt;MM&gt;&lt;yyyy&gt;&lt;HH&gt;&lt;mm&gt;&lt;ss&gt;&lt;xxx&gt;
+     * where xxx is a random 3-digit suffix to prevent collisions within the same second.
+     * Example: IN01032026201414523
+     */
+    private String generateInquiryId() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        String timestamp = now.format(DateTimeFormatter.ofPattern("ddMMyyyyHHmmss"));
+        int suffix = ThreadLocalRandom.current().nextInt(100, 1000); // 100–999
+        return "IN" + timestamp + suffix;
     }
 }

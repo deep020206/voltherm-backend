@@ -101,7 +101,7 @@ public class ProductService {
     private void merge(Product target, Product src) {
         if (src.getProductName() != null) target.setProductName(src.getProductName());
         if (src.getPrice() != 0) target.setPrice(src.getPrice());
-        if (src.isFeatured()) target.setFeatured(src.isFeatured());
+        target.setFeatured(src.isFeatured());
         target.setAvailable(src.isAvailable());
         if (src.getCategory() != null) target.setCategory(src.getCategory());
         if (src.getSubCategory() != null) target.setSubCategory(src.getSubCategory());

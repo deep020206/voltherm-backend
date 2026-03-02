@@ -93,6 +93,12 @@ public class AuthService {
         // Validate new password strength
         validatePasswordStrength(request.getNewPassword());
 
+        // Ensure email is configured before trying to send
+        if (!emailService.isEmailConfigured()) {
+            throw new ValidationException(
+                "Email service is not configured. Please set up sender and receiver email addresses in Admin Settings before using OTP-based password change.");
+        }
+
         // Generate 6-digit OTP
         String otp = generateOtp();
 
